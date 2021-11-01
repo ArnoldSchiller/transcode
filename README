@@ -41,8 +41,187 @@ USAGE:
 ------
 ./transcode -h | more
 
+
+transcode v1.1.7 (C) 2001-2003 Thomas Oestreich, 2003-2010 Transcode Team
+
+Usage: transcode [options...]
+
+Options:
+  -h/--help                      print this usage message and exit
+  -v/--version                   print version and exit
+  -q/--verbose level             verbosity (0=quiet,1=info,2=debug) [1]
+
+  ======== Input, output, and control files ========
+
+  -i/--input file                input file/directory/device/mountpoint name
+     --multi_input               enable EXPERIMENTAL multiple input mode (see
+                                    manpage)
+  -o/--output file               output file name
+     --avi_limit size            split output AVI file after "size" MB [2048]
+     --avi_comments file         read AVI header comments from file [off]
+  -t/--split n,base              split output to base%03d.avi with n frames
+                                    [off]
+  -p/--audio_input file          read audio stream from separate file [off]
+  -m/--audio_output file         write audio stream to separate file [off]
+     --nav_seek file             use VOB navigation file [off]
+     --socket file               socket file for run-time control [off]
+     --write_pid file            write pid of transcode process to "file" [off]
+     --config_dir dir            assume config files are in this dir [off]
+
+  ======== Input stream selection ========
+
+  -a/--extract_track a[,v]       extract audio[,video] track [0,0]
+  -c/--frames f1-f2[,f3-f4...]   encode only given range (frames or HH:MM:SS),
+                                    f2,f4,... are *not* encoded [all]
+     --frame_interval N          select only every Nth frame to be exported [1]
+  -T/--title t[,c[-d][,a]]       select DVD title[,chapters[,angle]] [1,all,1]
+  -S/--psu unit[,s1-s2]          process program stream unit[,s1-s2] sequences
+                                    [0,all]
+  -L/--vob_seek N                seek to VOB stream offset Nx2kB [0]
+     --ts_pid 0xNN               transport video stream pid [0]
+
+  ======== Input stream format options ========
+
+  -H/--probe n                   auto-probe n MB of source (0=off) [1]
+     --mplayer_probe             use (external) mplayer to probe source [off]
+  -x/--import_with vmod[,amod]   video[,audio] import modules [null]
+  -g/--frame_size WxH            video frame size [720x576]
+     --import_asr C              set import display aspect ratio code C [auto]
+  -f/--import_fps rate[,frc]     input video frame rate[,frc] [25.000,0]
+     --hard_fps                  disable smooth dropping (for variable fps
+                                    clips) [enabled]
+  -e/--import_afmt r[,b[,c]]     import audio sample format [48000,16,2]
+  -n/--import_codec 0xNN         import audio codec ID [0x2000]
+     --no_audio_adjust           disable audio frame size adjustment [enabled]
+
+  ======== Output stream format options ========
+
+     --export_prof profile       export profile:
+                                    {vcd|svcd|xvcd|dvd}[-pal|-ntsc|-secam]
+                                    [none]
+  -y/--export_with vm[,am[,mm]]  video[,audio[,mplex]] export modules [null]
+  -F/--export_param string       encoder parameter strings [module dependent]
+  -N/--export_codec format       export audio codec [mp3]
+  -R/--multipass N[,vf[,af]]     enable multi-pass encoding (0-3)
+                                    [0,divx4.log,pcm.log]
+  -w/--vbitrate r[,k[,c]]        encoder bitrate[,keyframes[,crispness]]
+                                    [1800,250,100]
+     --video_max_bitrate r       maximum bitrate when encoding variable bitrate
+                                    MPEG-2 streams [same as -w]
+     --export_fps f[,c]          output video frame rate[,code] [as input]
+     --export_frc C              set export frame rate code C independently of
+                                    actual frame rate [derived from export FPS]
+     --export_asr C              set export display aspect ratio code C [as
+                                    input]
+     --export_par {C | N,D}      set export pixel aspect ratio [auto]
+     --encode_fields C           enable field-based encoding if supported [off]
+                                    C can be t (top-first), b (bottom-first),
+                                             p (progressive), u (unknown)
+     --pulldown                  set MPEG 3:2 pulldown flags on export [off]
+  -b/--abitrate r[,v[,q[,m]]]    audio encoder bitrate
+                                    kBits/s[,vbr[,quality[,mode]]] [128,0,5,0]
+  -E/--export_afmt r[,b[,c]]     audio output samplerate, bits, channels [as
+                                    input]
+
+  ======== Video processing options ========
+
+     --pre_clip t[,l[,b[,r]]]    select initial frame region by clipping [off]
+  -j/--im_clip t[,l[,b[,r]]]     clip or add frame border before filters [off]
+  -I/--deinterlace mode          deinterlace video using given mode (1-5) [off]
+  -X/--expand n[,m[,M]]          expand to height+n*M rows, width+m*M columns
+                                    [0,0,32]
+  -B/--shrink n[,m[,M]]          shrink to height-n*M rows, width-m*M columns
+                                    [0,0,32]
+  -Z/--zoom [W]x[H][,mode]       resize to W columns, H rows w/filtering [off]
+     --zoom_filter filter        use given filter for -Z resizing [Lanczos3]
+  -Y/--ex_clip t[,l[,b[,r]]]     clip or add frame border after filters [off]
+  -r/--reduce n[,m]              reduce video height/width by n[,m] [off]
+  -z/--flip                      flip video frame upside down [off]
+  -l/--mirror                    mirror video frame [off]
+  -k/--swap_colors               swap red/blue (Cb/Cr) in video frame [off]
+  -K/--grayscale                 enable grayscale mode [off]
+  -G/--gamma val                 gamma correction (0.0-10.0) [off]
+  -C/--antialias mode            enable anti-aliasing mode (1-3) [off]
+     --antialias_para w,b        center pixel weight, xy-bias [0.333,0.500]
+     --post_clip t[,l[,b[,r]]]   select final frame region by clipping [off]
+  -V/--video_format fmt          select internal video format [yuv420p]
+                                    one of: yuv420p, yuv422p, rgb24
+     --keep_asr                  try to keep aspect ratio (broken)
+
+  ======== Audio processing options ========
+
+  -d/--audio_swap                swap bytes in audio stream [off]
+  -s/--audio_scale g[,c,f,r]     scale volume by gain[,center,front,rear]
+                                    [1,1,1,1]
+  -A/--audio_use_ac3             use AC3 as internal audio codec [off]
+
+  ======== Other processing options ========
+
+  -J/--filter f1[,f2...]         apply external audio/video filters [none]
+  -Q/--quality enc[,dec]         encoding[,decoding] quality (0=fastest-5=best)
+                                    [5,5]
+  -P/--passthrough flag          pass-through flag (0=off|1=V|2=A|3=A+V) [0]
+  -D/--sync_frame N              sync video start with audio frame num [0]
+     --av_fine_ms time           AV fine-tuning shift in millisecs [autodetect]
+  -M/--demuxer_sync N            demuxer PES AV sync mode
+                                    (0=off|1=PTS only|2=full) [1]
+
+  ======== Codec-specific options ========
+
+     --dv_yv12_mode              (libdv) force YV12 mode for PAL
+                                    Use this option if transcode autodetection
+                                    fails, with DV video.
+     --dv_yuy2_mode              (libdv) use YUY2 mode for PAL [YV12]
+                                    If you experience crashes decoding DV
+                                    video, try this option.
+     --quantizers min,max        min/max quantizer, for MPEG-like codecs [2,31]
+     --divx_quant min,max        (DivX) min/max quantizer (deprecated) [2,31]
+     --divx_rc p,rp,rr           (DivX) rate control parameter [2000,10,20]
+     --divx_vbv_prof N           (DivX) VBV profile (0=free-5=hiqhq) [3]
+     --divx_vbv br,sz,oc         (DivX) VBV params (bitrate,size,occupancy)
+                                    [10000,192,36864]
+     --lame_preset N[,fast]      (LAME) use preset named N [off]
+     --no_bitreservoir           (LAME) disable bitreservoir [off]
+  -O/--encoder_noflush           avoid to flush buffer(s) on encoder stop
+                                    [enabled]
+     --a52_demux                 (liba52) demux AC3/A52 to separate channels
+                                    [off]
+     --a52_drc_off               (liba52) disable dynamic range compression
+                                    [enabled]
+     --a52_dolby_off             (liba52) disable Dolby surround [enabled]
+
+  ======== Cluster/PSU/chapter mode processing ========
+
+  -W/--autosplit n,m[,file]      autosplit VOB and process part n of m [off]
+     --cluster_percentage        use percentage mode for cluster encoding [off]
+     --cluster_chunks a-b        process chunk range instead of selected chunk
+                                    [off]
+     --psu_mode                  process VOB in PSU, -o is a filemask incl. %d
+                                    [off]
+     --psu_chunks a-b            process only units a-b for PSU mode [all]
+     --no_split                  encode to single file in chapter/psu mode
+                                    [off]
+  -U/--chapter_mode base         process DVD in chapter mode to base-ch%02d.avi
+                                    [off]
+
+  ======== Miscellaneous options ========
+
+     --log_no_color              disable colors in log messages [use colors]
+  -u/--buffers N                 use N framebuffers for AV processing [10]
+     --threads N                 use N threads for AV processing [1]
+     --progress_meter N          select type of progress meter [1]
+     --progress_rate N           print progress every N frames [1]
+     --nice N                    set niceness to N [off]
+     --accel type[,type...]      override CPU acceleration flags (for
+                                    debugging)
+
+use tcmodinfo to discover module properties and configurable options.
+
+
+
+
 prints a list of available options. Check out
-http://www.theorie.physik.uni-goettingen.de/~ostreich/transcode/
+https://web.archive.org/web/20041014073705/http://www.theorie.physik.uni-goettingen.de:80/~ostreich/transcode/html/intro.html
 for more details.
 
 use ^C for safely stopping the encoder.
